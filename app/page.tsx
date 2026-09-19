@@ -29,6 +29,7 @@ export default function Home() {
   const [searched, setSearched] = useState(false);
   const [searching, setSearching] = useState(false);
   const [regionsError, setRegionsError] = useState('');
+  const displayRegions = regions.length > 0 ? regions : fallbackRegions;
 
   useEffect(() => {
     const loadRegions = async () => {
@@ -136,7 +137,7 @@ export default function Home() {
                   className="w-full border border-gray-200 rounded-lg p-3 text-gray-800 text-sm"
                 >
                   <option value="">Choisir une ville</option>
-                  {regions.map((r: any) => (
+                  {displayRegions.map((r: any) => (
                     <option key={r.id} value={r.id}>{r.name}</option>
                   ))}
                 </select>
@@ -150,7 +151,7 @@ export default function Home() {
                   className="w-full border border-gray-200 rounded-lg p-3 text-gray-800 text-sm"
                 >
                   <option value="">Choisir une ville</option>
-                  {regions.map((r: any) => (
+                  {displayRegions.map((r: any) => (
                     <option key={r.id} value={r.id}>{r.name}</option>
                   ))}
                 </select>
