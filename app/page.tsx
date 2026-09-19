@@ -22,7 +22,7 @@ const fallbackRegions = [
 ].map((name, index) => ({ id: index + 1, name }));
 
 export default function Home() {
-  const [regions, setRegions] = useState<any[]>([]);
+  const [regions, setRegions] = useState<any[]>(fallbackRegions);
   const [departure, setDeparture] = useState('');
   const [arrival, setArrival] = useState('');
   const [trips, setTrips] = useState<any[]>([]);
