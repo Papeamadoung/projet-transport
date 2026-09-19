@@ -36,11 +36,13 @@ export default function Home() {
       const { data, error } = await supabase.from('regions').select('id, name').order('name');
 
       if (error) {
-        setRegionsError('Impossible de charger les régions.');
+        console.error('Erreur de chargement des régions:', error);
+        setRegionsError('');
         setRegions(fallbackRegions);
         return;
       }
 
+      setRegionsError('');
       setRegions(data?.length ? data : fallbackRegions);
     };
 
