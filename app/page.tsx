@@ -4,6 +4,23 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
+const fallbackRegions = [
+  'Dakar',
+  'Diourbel',
+  'Fatick',
+  'Kaffrine',
+  'Kaolack',
+  'Kédougou',
+  'Kolda',
+  'Louga',
+  'Matam',
+  'Saint-Louis',
+  'Sédhiou',
+  'Tambacounda',
+  'Thiès',
+  'Ziguinchor',
+].map((name, index) => ({ id: index + 1, name }));
+
 export default function Home() {
   const [regions, setRegions] = useState<any[]>([]);
   const [departure, setDeparture] = useState('');
@@ -19,11 +36,11 @@ export default function Home() {
 
       if (error) {
         setRegionsError('Impossible de charger les régions.');
-        setRegions([]);
+        setRegions(fallbackRegions);
         return;
       }
 
-      setRegions(data ?? []);
+      setRegions(data?.length ? data : fallbackRegions);
     };
 
     loadRegions();
@@ -149,6 +166,14 @@ export default function Home() {
                 </button>
               </div>
             </div>
+            {regionsError && (
+              <p className="mt-3 text-sm text-red-600 text-center">{regionsError}</p>
+            )}
+            {!regionsError && regions.length === 0 && (
+              <p className="mt-3 text-sm text-amber-700 text-center">
+                Aucune ville n&apos;est encore disponible.
+              </p>
+            )}
           </div>
 
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 mt-8 text-xs text-slate-400">
