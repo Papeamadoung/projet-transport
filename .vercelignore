@@ -1,0 +1,4 @@
+supabase/functions
+supabase/functions/**
+node_modules
+.next
