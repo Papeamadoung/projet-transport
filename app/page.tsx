@@ -52,12 +52,14 @@ export default function Home() {
   const handleSearch = async () => {
     setSearching(true);
 
-    const [{ data: rawTrips, error: tripsError }, { data: companies = [] }, { data: allRegions = [], error: regionsQueryError }, { data: seatRows = [] }] = await Promise.all([
-      supabase.from('trips').select('*'),
-      supabase.from('companies').select('id, name'),
-      supabase.from('regions').select('id, name'),
-      supabase.from('seats').select('trip_id, status'),
-    ]);
+    const response = await fetch('/api/trips');
+    const result = await response.json();
+    const rawTrips = result.trips ?? [];
+    const companies = result.companies ?? [];
+    const allRegions = result.regions ?? [];
+    const seatRows = result.seats ?? [];
+    const tripsError = response.ok ? null : result.error;
+    const regionsQueryError = null;
 
     if (tripsError) {
       setTrips([]);
