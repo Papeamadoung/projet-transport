@@ -52,7 +52,7 @@ export default function Home() {
   const handleSearch = async () => {
     setSearching(true);
 
-    const [{ data: rawTrips, error: tripsError }, { data: companies = [] }, { data: allRegions = [] }, { data: seatRows = [] }] = await Promise.all([
+    const [{ data: rawTrips, error: tripsError }, { data: companies = [] }, { data: allRegions = [], error: regionsQueryError }, { data: seatRows = [] }] = await Promise.all([
       supabase.from('trips').select('*'),
       supabase.from('companies').select('id, name'),
       supabase.from('regions').select('id, name'),
@@ -66,9 +66,11 @@ export default function Home() {
       return;
     }
 
-    const regionMap = new Map<number, string>((allRegions as Array<{ id: number; name: string }>).map((region) => [region.id, region.name]));
+    const regionRows = allRegions ?? [];
+    const regionMap = new Map<number, string>((regionRows as Array<{ id: number; name: string }>).map((region) => [region.id, region.name]));
     const companyMap = new Map<number, string>((companies as Array<{ id: number; name: string }>).map((company) => [company.id, company.name]));
     const availableSeatsByTrip = new Map<number, number>();
+    const canFilterByRegion = !regionsQueryError && regionRows.length > 0;
 
     (seatRows as Array<{ trip_id: number; status: string }>).forEach((seat) => {
       if (seat.status === 'libre') {
@@ -78,8 +80,8 @@ export default function Home() {
 
     const filteredTrips = (rawTrips as any[])
       .filter((trip) => {
-        if (departure && String(trip.departure_region_id) !== departure) return false;
-        if (arrival && String(trip.arrival_region_id) !== arrival) return false;
+        if (canFilterByRegion && departure && String(trip.departure_region_id) !== departure) return false;
+        if (canFilterByRegion && arrival && String(trip.arrival_region_id) !== arrival) return false;
         return true;
       })
       .map((trip) => ({
